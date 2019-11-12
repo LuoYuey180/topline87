@@ -4,6 +4,7 @@ import router from './router'
 
 //  导入全局样式控制文件
 import '@/assets/css/global.css'
+// import '@/assets/css/resetui.css'
 
 //  注册element-ui依赖包
 import ElementUI from 'element-ui'

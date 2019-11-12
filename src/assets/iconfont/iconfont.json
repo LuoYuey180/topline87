@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "3570952",
+      "name": "设置",
+      "font_class": "shezhi",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "5308432",
+      "name": "首页-选中",
+      "font_class": "index",
+      "unicode": "e504",
+      "unicode_decimal": 58628
+    },
+    {
+      "icon_id": "6675664",
+      "name": "内容",
+      "font_class": "neirong",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
       "icon_id": "7121111",
       "name": "电话",
       "font_class": "dianhua",
@@ -18,6 +39,13 @@
       "font_class": "renzheng",
       "unicode": "e79f",
       "unicode_decimal": 59295
+    },
+    {
+      "icon_id": "10432129",
+      "name": "粉丝",
+      "font_class": "fensi",
+      "unicode": "e6d3",
+      "unicode_decimal": 59091
     }
   ]
 }
