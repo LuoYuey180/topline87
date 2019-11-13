@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 const routes = [{
+  //  登录页面路由
   path: '/login',
   name: 'login',
   //  @别名：代表src目录的绝对路径名地址（vuecli准备好的，直接用即可）
@@ -11,15 +12,24 @@ const routes = [{
   component: () => import('@/views/login')
 },
 {
+  //  首页页面路由
   path: '/home',
   name: 'home',
   redirect: '/welcome',
   component: () => import('@/views/home'),
+  //  首页的子路由
   children: [{
     path: '/welcome',
     name: 'welcome',
     component: () => import('@/views/welcome')
-  }]
+  },
+  {
+    //  文章列表路由
+    path: '/article',
+    name: 'article',
+    component: () => import('@/views/article')
+  }
+  ]
 }
 ]
 

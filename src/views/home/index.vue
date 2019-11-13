@@ -9,8 +9,9 @@
         background-color="#363b4d"
         :collapse="show"
         :collapse-transition="false"
+        router
       >
-        <el-menu-item index="1" :style="{width:show?'60px':'172px'}">
+        <el-menu-item index="/welcome" :style="{width:show?'60px':'172px'}">
           <i class="iconfont icon-index"></i>
           <span slot="title">首页</span>
         </el-menu-item>
@@ -24,9 +25,9 @@
               <i class="el-icon-menu"></i>
               发布文章
             </el-menu-item>
-            <el-menu-item index="2-2">
+            <el-menu-item index="/article">
               <i class="el-icon-menu"></i>
-              内容列表
+              文章列表
             </el-menu-item>
             <el-menu-item index="2-3">
               <i class="el-icon-menu"></i>
@@ -207,6 +208,7 @@ export default {
   }
 }
 .el-main {
-  background-color: rgb(209, 209, 209);
+  padding: 0 8px 8px 8px;
+  background-color: #f2f3f5;
 }
 </style>
