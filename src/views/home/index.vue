@@ -11,39 +11,39 @@
         :collapse-transition="false"
         router
       >
-        <el-menu-item index="/welcome" :style="{width:show?'60px':'172px'}">
+        <el-menu-item id="icon-home" index="/welcome" :style="{width:show?'60px':'172px'}">
           <i class="iconfont icon-index"></i>
           <span slot="title">首页</span>
         </el-menu-item>
-        <el-submenu index="2" :style="{width:show?'60px':'172px'}">
+        <el-submenu id="icon" index="2" :style="{width:show?'60px':'172px'}">
           <template slot="title">
             <i class="iconfont icon-neirong"></i>
             <span>内容管理</span>
           </template>
           <el-menu-item-group id="inside">
-            <el-menu-item index="2-1">
-              <i class="el-icon-menu"></i>
+            <el-menu-item index="/articleadd">
+              <i class="iconfont icon-fabu"></i>
               发布文章
             </el-menu-item>
             <el-menu-item index="/article">
-              <i class="el-icon-menu"></i>
+              <i class="iconfont icon-liebiao"></i>
               文章列表
             </el-menu-item>
             <el-menu-item index="2-3">
-              <i class="el-icon-menu"></i>
+              <i class="iconfont icon-pinglun_huaban"></i>
               评论列表
             </el-menu-item>
             <el-menu-item index="2-4">
-              <i class="el-icon-menu"></i>
+              <i class="iconfont icon-sucai"></i>
               素材管理
             </el-menu-item>
           </el-menu-item-group>
         </el-submenu>
-        <el-menu-item index="3" :style="{width:show?'60px':'172px'}">
+        <el-menu-item id="icon-fan" index="3" :style="{width:show?'60px':'172px'}">
           <i class="iconfont icon-fensi"></i>
           <span slot="title">粉丝管理</span>
         </el-menu-item>
-        <el-menu-item index="4" :style="{width:show?'60px':'172px'}">
+        <el-menu-item id="icon-setting" index="4" :style="{width:show?'60px':'172px'}">
           <i class="iconfont icon-shezhi"></i>
           <span slot="title">账户信息</span>
         </el-menu-item>
@@ -145,6 +145,21 @@ export default {
     width: 100% !important;
     // background-color: #589df8;
     transition: 0.7s !important;
+    #icon-home /deep/ i {
+      font-size: 20px;
+      margin-right: -3px;
+    }
+    #icon-fan /deep/ i {
+      font-size: 18px;
+    }
+    #icon-setting /deep/ i {
+      font-size: 20px;
+    }
+    #icon /deep/ i {
+      &:nth-child(1) {
+        font-size: 16px;
+      }
+    }
     .el-menu-item.is-active {
       width: 100% !important;
       background-color: #589df8 !important;
@@ -162,7 +177,7 @@ export default {
       }
       i {
         width: 0px;
-        padding-right: 14px;
+        // padding-right: 6px;
         vertical-align: -2px;
       }
     }

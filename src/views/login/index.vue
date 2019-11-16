@@ -167,7 +167,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
-  background: url('login_bg.jpg');
+  background: url('office.jpg');
   background-size: cover;
   .login-box {
     width: 400px;

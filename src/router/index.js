@@ -28,6 +28,18 @@ const routes = [{
     path: '/article',
     name: 'article',
     component: () => import('@/views/article')
+  },
+  {
+    //  发布文章
+    path: '/articleadd',
+    name: 'articleadd',
+    component: () => import('@/views/articleadd')
+  },
+  {
+    //  修改文章
+    path: '/articleedit:aid',
+    name: 'articleedit',
+    component: () => import('@/views/articleedit/articleedit.vue')
   }
   ]
 }

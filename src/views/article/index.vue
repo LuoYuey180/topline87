@@ -7,10 +7,10 @@
       </div>
       <div class="text item">
         <!-- {{'列表内容 ' + o }} -->
-        <el-form label-width="100px">
+        <el-form :model="searchForm" label-width="100px">
           <el-form-item label="文章列表：">
             <!-- 该group可以统一给多个radio单选按钮设置change事件，当一个radio选中后，可以被感知，之后可以调用getArticleList()方法，根据变化后的文章状态获取对应的文章列表数据 -->
-            <el-radio-group @change="getArticleList()" v-model="searchForm.status">
+            <el-radio-group v-model="searchForm.status">
               <el-radio label>全部</el-radio>
               <el-radio label="0">草稿</el-radio>
               <el-radio label="1">待审核</el-radio>
@@ -19,20 +19,8 @@
               <el-radio label="4">已删除</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="频道列表：">
-            <el-select
-              @change="getArticleList()"
-              clearable
-              v-model="searchForm.channel_id"
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in channeList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
-            </el-select>
+          <el-form-item label="频道列表：" prop="channel_id">
+            <channel-com @slt="selectHandler">sacs</channel-com>
           </el-form-item>
           <el-form-item label="时间选择：">
             <el-date-picker
@@ -55,34 +43,33 @@
       </div>
       <el-table :data="articleList">
         <el-table-column label="图片">
-          <img
-            style="display:inline-block; width:140px; height:100px; background-color:#f5f5f5; text-align:center; line-height:100px; color:#cccccc"
-            :src="stData.row.cover.images[0]"
-            width="140"
-            height="100"
-            slot-scope="stData"
-            alt="图片加载失败"
-          />
-          <!-- <span
-            style="display:inline-block; width:140px; height:100px; background-color:#f5f5f5; text-align:center; line-height:100px; color:#cccccc"
-          >图片加载失败</span>-->
+          <div class="block" slot-scope="stData">
+            <span class="demonstration"></span>
+            <el-image style="width: 140px; height: 100px" :src="stData.row.cover.images[0]"></el-image>
+          </div>
         </el-table-column>
         <el-table-column prop="title" label="标题"></el-table-column>
         <el-table-column prop="status" label="状态">
-          <div class="tag-group" slot-scope="saData">
-            <el-tag size="small" v-if="saData.row.status === 0" effect="light">草稿</el-tag>
-            <el-tag size="small" v-else-if="saData.row.status === 1" effect="light">待审核</el-tag>
-            <el-tag size="small" v-else-if="saData.row.status === 2" effect="light">审核通过</el-tag>
-            <el-tag size="small" v-else-if="saData.row.status === 3" effect="light">审核失败</el-tag>
+          <!-- 通过template统一设置接收作用域插槽数据 -->
+          <template class="tag-group" slot-scope="saData">
+            <el-tag size="small" v-if="saData.row.status === 0" type="info">草稿</el-tag>
+            <el-tag size="small" v-else-if="saData.row.status === 1" type="success">待审核</el-tag>
+            <el-tag size="small" v-else-if="saData.row.status === 2">审核通过</el-tag>
+            <el-tag size="small" v-else-if="saData.row.status === 3" type="danger">审核失败</el-tag>
             <el-tag size="small" v-else effect="light">已删除</el-tag>
-          </div>
+          </template>
         </el-table-column>
         <el-table-column prop="pubdate" label="时间"></el-table-column>
         <el-table-column prop="pubdate" label="操作">
-          <el-row>
-            <el-button size="mini" type="primary">修改</el-button>
-            <el-button size="mini" type="danger">删除</el-button>
-          </el-row>
+          <!-- 内容区域设置当前列显示的信息 -->
+          <template slot-scope="saData">
+            <el-button
+              size="mini"
+              type="primary"
+              @click="$router.push(`/articleedit${saData.row.id}`)"
+            >修改</el-button>
+            <el-button @click="del(saData.row.id)" size="mini" type="danger">删除</el-button>
+          </template>
         </el-table-column>
       </el-table>
       <div id="Pagination">
@@ -102,12 +89,44 @@
 </template>
 
 <script>
+//  引入公共频道列表组件
+import ChannelCom from '@/components/channel.vue'
+
 export default {
+  name: 'ArticleList',
+  components: {
+    //  注册独立的频道组件
+    ChannelCom
+  },
   created () {
-    this.getChanneList() //  调用频道信息方法
     this.getArticleList() // 获取文章列表信息
   },
   methods: {
+    selectHandler (val) {
+      this.searchForm.channel_id = val
+      console.log(val)
+      console.log(this.searchForm.channel_id)
+    },
+    //  删除文章方法
+    del (id) {
+      this.$confirm('确定要删除该数据吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          let pro = this.$http.delete(`/articles/${id}`)
+          pro
+            .then(result => {
+              //  刷新页面
+              this.getArticleList()
+            })
+            .catch(err => {
+              return this.$message.error('删除文章失败' + err)
+            })
+        })
+        .catch(() => {})
+    },
     handleSizeChange (val) {
       this.searchForm.per_page = val
       this.getArticleList()
@@ -115,19 +134,6 @@ export default {
     handleCurrentChange (val) {
       this.searchForm.page = val
       this.getArticleList()
-    },
-    getChanneList () {
-      let pro = this.$http.get('/channels')
-      pro
-        .then(result => {
-          if (result.data.message === 'OK') {
-            this.channeList = result.data.data.channels
-            // console.log(result)
-          }
-        })
-        .catch(err => {
-          return this.$message.error('获得文章频道错误' + err)
-        })
     },
     getArticleList () {
       //  把searFrom内部为空的成员过滤掉
@@ -147,16 +153,14 @@ export default {
             this.articleList = result.data.data.results
             this.tot = result.data.data.total_count
           }
-          // console.log(result)
         })
         .catch(err => {
           return this.$message.error('获得文章列表错误' + err)
         })
     }
   },
-  name: 'ArticleList',
+  //    watch：监听器
   watch: {
-    //    watch：监听器
     timetotime: function (newv, oldv) {
       //  data名称：function(newv,oldv)
       //  newv：data更新后的值
@@ -172,6 +176,12 @@ export default {
         this.searchForm.end_pubdate = '' //    文章发布结束时间
       }
       this.getArticleList()
+    },
+    searchForm: {
+      handler: function (newv, oldv) {
+        this.getArticleList()
+      },
+      deep: true
     }
   },
   data () {
@@ -179,8 +189,7 @@ export default {
       //  接收到的是一个**数组**信息，里边的第1、2个单元分别代表开始日期和结束日期
       // 临时成员，接收范围时间，后期分配给begin_pubdate和end_pubdate
       articleList: [],
-      timetotime: [],
-      channeList: [],
+      timetotime: '',
       tot: 0,
       searchForm: {
         status: '', //   文章状态，0-草稿，1-待审核，2-审核通过，3-审核失败，4-已删除，不传为全部
@@ -195,10 +204,26 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .box-card {
   margin-top: 8px;
-  .el-card__header {
+  &:nth-child(2) {
+    /deep/ .el-table {
+      /deep/ .el-table__header {
+        /deep/ th {
+          text-align: center;
+        }
+      }
+    }
+    /deep/ .el-table__body-wrapper {
+      /deep/ tr {
+        /deep/ td {
+          text-align: center;
+        }
+      }
+    }
+  }
+  /deep/ .el-card__header {
     border-bottom: 1px dashed #cccccc;
   }
   #Pagination {
