@@ -43,7 +43,7 @@
           <i class="iconfont icon-fensi"></i>
           <span slot="title">粉丝管理</span>
         </el-menu-item>
-        <el-menu-item id="icon-setting" index="4" :style="{width:show?'60px':'172px'}">
+        <el-menu-item id="icon-setting" index="/account" :style="{width:show?'60px':'172px'}">
           <i class="iconfont icon-shezhi"></i>
           <span slot="title">账户信息</span>
         </el-menu-item>

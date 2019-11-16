@@ -24,7 +24,7 @@ const routes = [{
     component: () => import('@/views/welcome')
   },
   {
-    //  文章列表路由
+    //  文章列表
     path: '/article',
     name: 'article',
     component: () => import('@/views/article')
@@ -40,6 +40,11 @@ const routes = [{
     path: '/articleedit:aid',
     name: 'articleedit',
     component: () => import('@/views/articleedit/articleedit.vue')
+  },
+  {
+    path: '/account',
+    name: 'account',
+    component: () => import('@/views/account/account.vue')
   }
   ]
 }
