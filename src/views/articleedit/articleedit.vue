@@ -19,6 +19,13 @@
               <el-radio :label="0">无图</el-radio>
               <el-radio :label="-1">自动</el-radio>
             </el-radio-group>
+            <ul>
+              <li @click="showDialog(item)" class="uploadbox" v-for="item in covernum" :key="item">
+                <span>点击图标选择图片</span>
+                <img v-if="editForm.cover.images[item-1]" :src="editForm.cover.images[item-1]" alt />
+                <div v-else class="el-icon-picture-outline"></div>
+              </li>
+            </ul>
           </el-form-item>
           <el-form-item prop="channel_id" label="频道">
             <channel-com @slt="selectHandler" :cid="editForm.channel_id"></channel-com>
@@ -30,6 +37,20 @@
         </el-form>
       </div>
       <!-- <div id="btn-bottom"></div> -->
+      <!-- 对话框组件 -->
+      <el-dialog @close="clearImage" title="素材展示" :visible.sync="dialogVisible" width="50%">
+        <!-- 匿名插槽：对话框的主体内容 -->
+        <ul>
+          <li class="image-box" v-for="item in imageList" :key="item.id">
+            <img @click="cliImage" :src="item.url" alt="没有图片" />
+          </li>
+        </ul>
+        <!-- 命名插槽，脚步的两个按钮 -->
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="imageOk">确 定</el-button>
+        </span>
+      </el-dialog>
     </el-card>
   </div>
 </template>
@@ -58,6 +79,13 @@ export default {
   computed: {
     aid () {
       return this.$route.params.aid
+    },
+    //  设置当前图片‘选择框’个数
+    covernum () {
+      if (this.editForm.cover.type > 0) {
+        return this.editForm.cover.type
+      }
+      return 0
     }
   },
   created () {
@@ -65,10 +93,19 @@ export default {
     // this.getChannelList()
     //  获取指定文章方法
     this.getArticleByAid()
+    this.getImageList()
   },
   data: function () {
     return {
-      //   channelList: [],
+      materialUrl: '', //   选中的素材图片的路径名地址信息
+      xv: 0, // 记录单击选择框的序号信息
+      imageList: [], //  素材图片列表
+      querycdt: {
+        collect: false,
+        page: 1,
+        per_page: 15
+      },
+      dialogVisible: false,
       editForm: {
         channel_id: '',
         cover: {
@@ -102,9 +139,65 @@ export default {
     }
   },
   methods: {
+    // 清除之前选择素材图片的痕迹(边框高亮、图片路径名)
+    clearImage () {
+      let lis = document.querySelectorAll('.image-box')
+      for (var i = 0; i < lis.length; i++) {
+        lis[i].style.border = ''
+      }
+      this.materialUrl = '' // 清除图片路径名
+    },
+    //  素材图片选取好，点击‘对话框’确定按钮后，记录素材图片
+    imageOk () {
+      if (this.materialUrl) {
+        //  给添加文章的表单域成员cover.image增加素材图片请求地址信息
+        this.editForm.cover.images[this.xv] = this.materialUrl
+        this.dialogVisible = false
+      } else {
+        this.$message.error('请选择一张图片，或者点击取消按钮！~')
+      }
+    },
+    cliImage (e) {
+      // console.log(e) //  鼠标事件对象
+      // e.target  //  被点击图片（img）的DOM对象
+      // e.target.parentNode  //  找到img的父级，即li标签
+      // 给li设置border边框，高亮效果
+
+      //  获取全部的li
+      //  进行遍历，清除li的样式，只留下选中的样式
+      let lis = document.querySelectorAll('.image-box')
+      for (var i = 0; i < lis.length; i++) {
+        lis[i].style.border = ''
+      }
+      //  把当前选中的DOM节点设置css样式
+      e.target.parentNode.style.border = '2px solid #409EFF'
+      //  把当前选中图片的src地址信息赋予给materialUrl成员
+      this.materialUrl = e.target.src
+    },
+    //  获取服务器的素材图片
+    getImageList () {
+      let pro = this.$http.get('/user/images', { params: this.querycdt })
+      pro
+        .then(result => {
+          if (result.data.message === 'OK') {
+            this.imageList = result.data.data.results
+          }
+          console.log(result)
+        })
+        .catch(err => {
+          return this.$message.error('获取图片错误' + err)
+        })
+    },
+    //  是否开启对话框
+    showDialog (n) {
+      this.xv = n - 1
+      // console.log(n - 1)
+
+      this.dialogVisible = true
+    },
     selectHandler (val) {
       this.editForm.channel_id = val
-      console.log(val)
+      // console.log(val)
     },
     getArticleByAid () {
       let pro = this.$http.get(`/articles/${this.aid}`)
@@ -113,7 +206,7 @@ export default {
           if (result.status === 200) {
             this.editForm = result.data.data
           }
-          console.log(result)
+          // console.log(result)
         })
         .catch(err => {
           return this.$message.error('获取文章错误' + err)
@@ -153,6 +246,38 @@ export default {
   .el-form {
     margin-top: 25px;
     /deep/ .el-form-item {
+      // 文章封面选择框样式
+      .uploadbox {
+        list-style: none;
+        width: 200px;
+        height: 200px;
+        margin: 10px;
+        float: left;
+        cursor: pointer;
+        span {
+          width: 200px;
+          height: 50px;
+          line-height: 50px;
+          display: block;
+          text-align: center;
+        }
+        div {
+          width: 200px;
+          height: 140px;
+          font-size: 100px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 4px;
+          border: 1px solid #dcdfe6;
+          border-radius: 4px;
+        }
+        img {
+          width: 200px;
+          height: 140px;
+          border-radius: 4px;
+        }
+      }
       /deep/ &:nth-child(1) {
         width: 560px;
       }
@@ -165,11 +290,47 @@ export default {
       }
       /deep/ &:nth-child(3) {
         width: 190%;
+        /deep/ ul {
+          overflow: hidden;
+          padding: 0px;
+          margin-left: -10px;
+        }
+      }
+    }
+  }
+  /deep/ .el-dialog {
+    /deep/ .el-dialog__header {
+      padding: 20px 20px;
+    }
+    /deep/ .el-dialog__body {
+      padding: 18px 18px 0 18px;
+      border-top: 1px dashed #cccccc;
+    }
+    /deep/ ul {
+      overflow: auto;
+      margin: 0;
+      padding-left: 0;
+      /deep/ .image-box {
+        list-style: none;
+        width: 116px;
+        height: 88px;
+        background-color: #fff;
+        margin: 10px;
+        float: left;
+        border: 1px solid #eee;
+        border-radius: 6px;
+        cursor: pointer;
+        box-sizing: border-box;
+        img {
+          width: 100%;
+          height: 100%;
+          border-radius: 4px;
+        }
       }
     }
   }
   #btn-bottom {
-    padding: 35px 0 30px 120px;
+    pediting: 35px 0 30px 120px;
     border-top: 1px dashed #cccccc;
     /deep/ .el-form-item {
       /deep/ .el-button {

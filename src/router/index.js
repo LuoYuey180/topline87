@@ -1,6 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
+//  导入nprogress
+import Nprogress from 'nprogress'
+import 'nprogress/nprogress.css'
+
 Vue.use(VueRouter)
 
 const routes = [{
@@ -42,6 +46,13 @@ const routes = [{
     component: () => import('@/views/articleedit/articleedit.vue')
   },
   {
+    //  素材管理
+    path: '/material',
+    name: 'material',
+    component: () => import('@/views/material/material.vue')
+  },
+  {
+    //  账户信息
     path: '/account',
     name: 'account',
     component: () => import('@/views/account/account.vue')
@@ -54,12 +65,19 @@ const router = new VueRouter({
   routes
 })
 
+//  路由前置守卫
 router.beforeEach((to, from, next) => {
+  Nprogress.start()
   let userinfo = window.sessionStorage.getItem('userinfo')
   if (!userinfo && to.path !== '/login') {
     return next('/login')
   }
   next()
+})
+
+//  路由后置守卫
+router.afterEach(() => {
+  Nprogress.done()
 })
 
 export default router

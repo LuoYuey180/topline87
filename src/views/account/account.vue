@@ -53,6 +53,9 @@
 </template>
 
 <script>
+//  引入公共bus的Vue对象
+import bus from '@/utils/bus.js'
+
 export default {
   name: 'Account',
   data () {
@@ -111,8 +114,11 @@ export default {
       let pro = this.$http.patch('/user/photo', fd)
       pro
         .then(result => {
+          console.log(result)
+          //  bus调用事件，给home传递更新后的名字
+          bus.$emit('upAccountPhoto', result.data.data.photo)
           this.accountForm.photo = result.data.data.photo
-          this.$message.success('修改头像成功！~')
+          //   this.$message.success('修改头像成功！~')
         })
         .catch(err => {
           return this.$message.error('获取用户头像错误' + err)
@@ -125,6 +131,8 @@ export default {
           pro
             .then(result => {
               if (result.status === 201) {
+                //  bus调用事件，给home传递更新后的名字
+                bus.$emit('upAccountName', result.data.data.name)
                 this.$message.success('修改账号成功！~')
               }
             })

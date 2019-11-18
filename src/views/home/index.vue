@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-aside :width="show?'60px':'172px'">
+    <el-aside :width="show ? '60px' : '172px'">
       <img src="./logo_admin.png" alt />
       <el-menu
         id="outside"
@@ -11,11 +11,11 @@
         :collapse-transition="false"
         router
       >
-        <el-menu-item id="icon-home" index="/welcome" :style="{width:show?'60px':'172px'}">
+        <el-menu-item id="icon-home" index="/welcome" :style="{ width: show ? '60px' : '172px' }">
           <i class="iconfont icon-index"></i>
           <span slot="title">首页</span>
         </el-menu-item>
-        <el-submenu id="icon" index="2" :style="{width:show?'60px':'172px'}">
+        <el-submenu id="icon" index="2" :style="{ width: show ? '60px' : '172px' }">
           <template slot="title">
             <i class="iconfont icon-neirong"></i>
             <span>内容管理</span>
@@ -33,17 +33,21 @@
               <i class="iconfont icon-pinglun_huaban"></i>
               评论列表
             </el-menu-item>
-            <el-menu-item index="2-4">
+            <el-menu-item index="/material">
               <i class="iconfont icon-sucai"></i>
               素材管理
             </el-menu-item>
           </el-menu-item-group>
         </el-submenu>
-        <el-menu-item id="icon-fan" index="3" :style="{width:show?'60px':'172px'}">
+        <el-menu-item id="icon-fan" index="3" :style="{ width: show ? '60px' : '172px' }">
           <i class="iconfont icon-fensi"></i>
           <span slot="title">粉丝管理</span>
         </el-menu-item>
-        <el-menu-item id="icon-setting" index="/account" :style="{width:show?'60px':'172px'}">
+        <el-menu-item
+          id="icon-setting"
+          index="/account"
+          :style="{ width: show ? '60px' : '172px' }"
+        >
           <i class="iconfont icon-shezhi"></i>
           <span slot="title">账户信息</span>
         </el-menu-item>
@@ -54,9 +58,9 @@
       <el-header>
         <div id="lf">
           <i
-            @click="show=!show"
+            @click="show = !show"
             style="cursor:pointer;"
-            :class="show? 'el-icon-s-unfold':'el-icon-s-fold'"
+            :class="show ? 'el-icon-s-unfold' : 'el-icon-s-fold'"
           ></i>
           <span>江苏传智播客教育科技股份有限公司</span>
         </div>
@@ -89,19 +93,49 @@
 </template>
 
 <script>
+//  引入公共bus的Vue对象
+import bus from '@/utils/bus.js'
+
+//  引入阿里巴巴图标库
 import '@/assets/iconfont/iconfont.css'
 export default {
   data () {
     return {
-      show: false
+      show: false,
+      tmpname: '',
+      tmpphoto: ''
     }
   },
+  //  生命周期（created）
+  created () {
+    // eslint-disable-next-line no-unused-expressions
+    bus.$on('upAccountName', nm => {
+      let userinfo = JSON.parse(window.sessionStorage.getItem('userinfo'))
+      userinfo.name = nm
+      window.sessionStorage.setItem('userinfo', JSON.stringify(userinfo))
+      this.tmpname = nm
+      // eslint-disable-next-line no-sequences
+    }),
+    bus.$on('upAccountPhoto', ph => {
+      let userinfo = JSON.parse(window.sessionStorage.getItem('userinfo'))
+      userinfo.photo = ph
+      window.sessionStorage.setItem('userinfo', JSON.stringify(userinfo))
+      this.tmpphoto = ph
+    })
+  },
+  //  计算属性
   computed: {
     name () {
-      return JSON.parse(window.sessionStorage.getItem('userinfo')).name
+      return (
+        this.tmpname ||
+        JSON.parse(window.sessionStorage.getItem('userinfo')).name
+      )
     },
     photo () {
-      return JSON.parse(window.sessionStorage.getItem('userinfo')).photo
+      return (
+        this.tmpphoto ||
+        JSON.parse(window.sessionStorage.getItem('userinfo')).photo
+      )
     }
   },
   methods: {
