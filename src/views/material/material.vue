@@ -18,12 +18,13 @@
         </el-upload>
       </div>
       <div class="text item">
+        <!-- <div class="text item" :data="imageList" slot-scope="saData"> -->
         <ul>
           <li class="image-box" v-for="item in imageList" :key="item.id">
             <img :src="item.url" alt />
             <div class="image-bot">
               <el-button type="success" icon="el-icon-star-off" circle></el-button>
-              <el-button type="danger" icon="el-icon-delete" circle></el-button>
+              <el-button @click="del(item.id)" type="danger" icon="el-icon-delete" circle></el-button>
             </div>
           </li>
         </ul>
@@ -49,6 +50,7 @@ export default {
   },
   created () {
     this.getImageList()
+    // this.del()
   },
   methods: {
     onSuccess () {
@@ -62,12 +64,34 @@ export default {
         .then(result => {
           if (result.data.message === 'OK') {
             this.imageList = result.data.data.results
+            // console.log(this.imageList)
+            // console.log(result)
           }
-          console.log(result)
         })
         .catch(err => {
           return this.$message.error('获取图片错误' + err)
         })
+    },
+    //  删除图片素材
+    del (id) {
+      this.$confirm('确定要删除该数据吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          let pro = this.$http.delete(`/user/images/${id}`)
+          pro
+            .then(result => {
+              //  刷新页面
+              this.getImageList()
+              this.$message.success('图片删除成功！')
+            })
+            .catch(err => {
+              return this.$message.error('删除图片失败' + err)
+            })
+        })
+        .catch(() => {})
     }
   }
 }

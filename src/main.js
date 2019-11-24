@@ -6,13 +6,11 @@ import router from './router'
 import '@/assets/css/global.css'
 // import '@/assets/css/resetui.css'
 
-//  注册element-ui依赖包
-import ElementUI from 'element-ui'
+//  引入element.js文件
+import '@/utils/element.js'
 
 //  引入axios
 import '@/utils/ax.js'
-
-Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 
