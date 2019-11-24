@@ -10,6 +10,7 @@
         :collapse="show"
         :collapse-transition="false"
         router
+        :default-active="$route.path"
       >
         <el-menu-item id="icon-home" index="/welcome" :style="{ width: show ? '60px' : '172px' }">
           <i class="iconfont icon-index"></i>
@@ -39,7 +40,7 @@
             </el-menu-item>
           </el-menu-item-group>
         </el-submenu>
-        <el-menu-item id="icon-fan" index="3" :style="{ width: show ? '60px' : '172px' }">
+        <el-menu-item id="icon-fan" index="/fans" :style="{ width: show ? '60px' : '172px' }">
           <i class="iconfont icon-fensi"></i>
           <span slot="title">粉丝管理</span>
         </el-menu-item>

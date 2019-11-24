@@ -66,7 +66,7 @@
             <el-button
               size="mini"
               type="primary"
-              @click="$router.push(`/articleedit${saData.row.id}`)"
+              @click="$router.push(`/articleedit/${saData.row.id}`)"
             >修改</el-button>
             <el-button @click="del(saData.row.id)" size="mini" type="danger">删除</el-button>
           </template>
@@ -99,13 +99,12 @@ export default {
     ChannelCom
   },
   created () {
-    this.getArticleList() // 获取文章列表信息
+    // this.del()
+    this.getArticleList() // 获取文章列表信息j
   },
   methods: {
     selectHandler (val) {
       this.searchForm.channel_id = val
-      console.log(val)
-      console.log(this.searchForm.channel_id)
     },
     //  删除文章方法
     del (id) {
@@ -119,6 +118,7 @@ export default {
           pro
             .then(result => {
               //  刷新页面
+              this.$message.success('文章删除成功！~')
               this.getArticleList()
             })
             .catch(err => {
@@ -155,7 +155,7 @@ export default {
           }
         })
         .catch(err => {
-          return this.$message.error('获得文章列表错误' + err)
+          return this.$message.error('登录时间已过期，请重新登录！~' + err)
         })
     }
   },

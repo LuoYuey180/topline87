@@ -36,18 +36,33 @@ export default {
   },
   methods: {
     //  获得频道
-    getChannelList () {
-      let pro = this.$http.get('/channels')
-      pro
-        .then(result => {
-          if (result.data.message === 'OK') {
-            this.channelList = result.data.data.channels
-            // console.log(result)
-          }
-        })
-        .catch(err => {
-          return this.$message.error('获取文章频道错误' + err)
-        })
+    // getChannelList () {
+    //   let pro = this.$http.get('/channels')
+    //   pro
+    //     .then(result => {
+    //       if (result.data.message === 'OK') {
+    //         this.channelList = result.data.data.channels
+    //         // console.log(result)
+    //       }
+    //     })
+    //     .catch(err => {
+    //       return this.$message.error('获取文章频道错误' + err)
+    //     })
+    // }
+    //  获得频道
+    //  对错误进行解决，通过try/catch
+
+    async getChannelList () {
+      try {
+        //  放置有可能产生错误的代码
+        let pro = await this.$http.get('/channels')
+        //  此时pro与then内部的result完全一致
+        this.channelList = pro.data.data.channels
+      } catch (err) {
+        //  对错误进行捕捉
+        //  err是错误信息对象
+        this.$message.error('获取频道错误' + err)
+      }
     }
   }
 }
