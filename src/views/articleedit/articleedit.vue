@@ -66,7 +66,6 @@ import { quillEditor } from 'vue-quill-editor'
 
 //  引入channel.vue公共组件
 import ChannelCom from '@/components/channel.vue'
-import { log } from 'util'
 
 export default {
   name: 'ArticleEdit',
@@ -331,7 +330,7 @@ export default {
     }
   }
   #btn-bottom {
-    padding: 35px 0 30px 120px;
+    pediting: 35px 0 30px 120px;
     border-top: 1px dashed #cccccc;
     /deep/ .el-form-item {
       /deep/ .el-button {

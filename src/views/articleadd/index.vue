@@ -218,7 +218,7 @@ export default {
               this.$router.push({ name: 'article' })
             })
             .catch(err => {
-              return this.$message.error('请选择图片或者选择无图') + err
+              return this.$message.error('发布文章错误' + err)
             })
         }
       })

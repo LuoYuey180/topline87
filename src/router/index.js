@@ -41,15 +41,9 @@ const routes = [{
   },
   {
     //  修改文章
-    path: '/articleedit/:aid',
+    path: '/articleedit:aid',
     name: 'articleedit',
     component: () => import('@/views/articleedit/articleedit.vue')
-  },
-  {
-    //  粉丝列表
-    path: '/fans',
-    name: 'fans',
-    component: () => import('@/views/fans/fans.vue')
   },
   {
     //  素材管理
